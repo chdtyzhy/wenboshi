@@ -34,9 +34,7 @@
         self.bgImageView = bgImageView;
         [self.bgView addSubview:bgImageView];
         bgImageView.image = [UIImage imageNamed:@"背景"];
-        
-//        self.zhushouBtn = [self getbtn:@" 温博士助手" image:[UIImage imageNamed:@"温度"]];
-//        self.zhushouBtn.tag = WBCehuaZhushou;
+
         self.wenduBtn = [self getbtn:@" 温度记录" image:[UIImage imageNamed:@"记录"]];
         self.wenduBtn.tag = WBCehuaCase;
         self.settingBtn = [self getbtn:@" 设置" image:[UIImage imageNamed:@"设置"]];

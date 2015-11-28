@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "侧边栏_MarkMan.png"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "侧边栏_MarkMan.png",
       "scale" : "2x"
     },
     {

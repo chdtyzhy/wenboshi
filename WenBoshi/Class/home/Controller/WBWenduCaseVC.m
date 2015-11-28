@@ -64,6 +64,7 @@
     [WBCacheTool deleteAllTemp];
     [self.tempAry removeAllObjects];
     [self.tableView reloadData];
+    self.tableView.tableFooterView = nil;
     [self showToastMessage:@"清除成功"];
 }
 

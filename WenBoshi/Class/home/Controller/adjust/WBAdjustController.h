@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WBAdjustController : UITableViewController
+@interface WBAdjustController : UIViewController
 
 @property (nonatomic ,strong) CBManager *manger;
 @end

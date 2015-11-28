@@ -1,15 +1,13 @@
 //
-//  ViewController.h
+//  WBWarningController.h
 //  WenBoshi
 //
-//  Created by luoshuisheng on 14/12/7.
+//  Created by apple on 14/12/14.
 //  Copyright (c) 2014年 luoshuisheng. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface WBWarningController : UIViewController
 
 @end
-

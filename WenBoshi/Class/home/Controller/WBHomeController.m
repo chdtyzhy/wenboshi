@@ -13,7 +13,6 @@
 #import "WBWarningImageView.h"
 #import "YCHomeBtn.h"
 #import "WBNavigationController.h"
-#import "MBProgressHUD+MJ.h"
 #import "MJAudioTool.h"
 #import "WBZhushouVC.h"
 #import "WBWenduCaseVC.h"
@@ -157,25 +156,34 @@
     CGFloat btnX = 0;
     CGFloat btnInterValX = (self.view.frame.size.width - btnW * 3 - interval * 2)/2;
     
-    for (int index = 0; index < 3; index ++) {
-        YCHomeBtn *btn = [YCHomeBtn buttonWithType:UIButtonTypeCustom];
-        btnX = btnInterValX +(btnW + interval)*index;
-        btn.tag = index;
-        [btn addTarget:self action:@selector(bottomBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-        btn.frame = CGRectMake(btnX, btnY, btnW, btnH);
-        [self.view addSubview:btn];
-        NSString *imageName = [NSString stringWithFormat:@"按钮%d",index + 1];
-        [btn setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
-        [btn setTitleColor:RGB(118, 100, 86) forState:UIControlStateNormal];
-        btn.titleLabel.font = [UIFont systemFontOfSize:11];
-        if (index == 0) {
-            [btn setTitle:@"记录温度" forState:UIControlStateNormal];
-        }else if(index == 1){
-            [btn setTitle:@"警报设置" forState:UIControlStateNormal];
-        }else{
-            [btn setTitle:@"偏差调整" forState:UIControlStateNormal];
-        }
-    }
+    //记录温度
+    YCHomeBtn *recordTempbtn = [YCHomeBtn buttonWithType:UIButtonTypeCustom];
+    btnX = btnInterValX +(btnW + interval)*0;
+    [recordTempbtn addTarget:self action:@selector(recordTempbtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    recordTempbtn.frame = CGRectMake(btnX, btnY, btnW, btnH);
+    [recordTempbtn setImage:[UIImage imageNamed:@"recordTemp"] forState:UIControlStateNormal];
+    [recordTempbtn setTitle:@"记录温度" forState:UIControlStateNormal];
+    [self.view addSubview:recordTempbtn];
+    
+    //警报设置
+    YCHomeBtn *warnSetBtn = [YCHomeBtn buttonWithType:UIButtonTypeCustom];
+    btnX = btnInterValX +(btnW + interval)*1;
+    [warnSetBtn addTarget:self action:@selector(warnSetBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+         warnSetBtn.frame = CGRectMake(btnX, btnY, btnW, btnH);
+    [warnSetBtn setImage:[UIImage imageNamed:@"warnSetBtn"] forState:UIControlStateNormal];
+    [warnSetBtn setTitle:@"警报设置" forState:UIControlStateNormal];
+    [self.view addSubview:warnSetBtn];
+    
+    //偏差调整"
+    YCHomeBtn *adjustSetBtn = [YCHomeBtn buttonWithType:UIButtonTypeCustom];
+    btnX = btnInterValX +(btnW + interval)*2;
+    [adjustSetBtn addTarget:self action:@selector(adjustSetBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    adjustSetBtn.frame = CGRectMake(btnX, btnY, btnW, btnH);
+    [adjustSetBtn setImage:[UIImage imageNamed:@"adjustSet"] forState:UIControlStateNormal];
+    [adjustSetBtn setTitle:@"偏差调整" forState:UIControlStateNormal];
+    [self.view addSubview:adjustSetBtn];
+
     return btnH + btnY;
 }
 
@@ -217,54 +225,59 @@
     }];
 }
 
--(void)bottomBtnClick:(UIButton *)btn
+// 记录温度点击事件
+-(void)recordTempbtnClick:(YCHomeBtn *)btn
 {
-    if (btn.tag == 0) { // 开始记录
-        if ([btn.titleLabel.text isEqualToString:@"记录温度"]) {
-            if (!self.manger.isCaputering) {
-                [self showToastMessage:@"请先连接设备"];
-                return;
-            }
-            
-            [btn setTitle:@"停止记录" forState:UIControlStateNormal];
-            self.timeLabel.hidden = NO;
-            NSArray *array =  [WBCacheTool temperatureCounts];
-            NSNumber *max = [array lastObject];
-            self.tempID =  [max intValue]+ 1;
-            NSTimer *showTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(changeTimeLabel) userInfo:nil repeats:YES];
-            self.timer = showTimer;
-            [showTimer fire];
-
-        }else{// 停止记录
-            [btn setTitle:@"记录温度" forState:UIControlStateNormal];
-            self.tempID = 0;
-            [self.timer invalidate];
-            self.timeLabel.text = @"00 ：00 ：00";
-            self.timeLabel.hidden = YES;
-            self.timeInt = 0;
+    if ([btn.titleLabel.text isEqualToString:@"记录温度"]) {
+        if (!self.manger.isCaputering) {
+            [self showToastMessage:@"请先连接设备"];
+            return;
         }
+        [btn setTitle:@"停止记录" forState:UIControlStateNormal];
+        self.timeLabel.hidden = NO;
+        NSArray *array =  [WBCacheTool temperatureCounts];
+        NSNumber *max = [array lastObject];
+        self.tempID =  [max intValue]+ 1;
+        NSTimer *showTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(changeTimeLabel) userInfo:nil repeats:YES];
+        self.timer = showTimer;
+        [showTimer fire];
         
-    }else if (btn.tag == 1){ // 警报设置
-        WBWarningController *controller = [[WBWarningController alloc] init];
-        WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
-        [self presentViewController:nav animated:YES completion:nil];
-    
-    }else{//偏差调整
-        [MBProgressHUD showMessage:@"停止采集"];
-        __weak typeof(self)weakSelf = self;
-        [self.manger stopCaputerWithSucces:^(NSString *DeviceValue) {
-            [MBProgressHUD hideHUD];
-            [weakSelf.stopBtn setTitle:@"开始" forState:UIControlStateNormal];
-            WBAdjustController *controller = [[WBAdjustController alloc] init];
-            WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
-            [weakSelf presentViewController:nav animated:YES completion:nil];
-            
-        } andFail:^(NSString *errorStr, NSString *localValue) {
-            [MBProgressHUD hideHUD];
-            [weakSelf showToastMessage:errorStr];
-        }];
+    }else{// 停止记录
+        [btn setTitle:@"记录温度" forState:UIControlStateNormal];
+        self.tempID = 0;
+        [self.timer invalidate];
+        self.timeLabel.text = @"00 ：00 ：00";
+        self.timeLabel.hidden = YES;
+        self.timeInt = 0;
     }
 }
+
+//警报设置 点击
+- (void)warnSetBtnClick:(YCHomeBtn *)btn
+{
+    WBWarningController *controller = [[WBWarningController alloc] init];
+    WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+//偏差调整 点击
+-(void)adjustSetBtnClick:(YCHomeBtn *)btn
+{
+    [MBProgressHUD showMessage:@"停止采集"];
+    __weak typeof(self)weakSelf = self;
+    [self.manger stopCaputerWithSucces:^(NSString *DeviceValue) {
+        [MBProgressHUD hideHUD];
+        [weakSelf.stopBtn setTitle:@"开始" forState:UIControlStateNormal];
+        WBAdjustController *controller = [[WBAdjustController alloc] init];
+        WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
+        [self presentViewController:nav animated:YES completion:nil];
+        
+    } andFail:^(NSString *errorStr, NSString *localValue) {
+        [MBProgressHUD hideHUD];
+        [weakSelf showToastMessage:errorStr];
+    }];
+}
+
 
 -(void)changeTimeLabel
 {
@@ -355,8 +368,9 @@
         vc.title = @"温度记录";
         [self presentViewController:nav animated:YES completion:nil];
     }else{
-        UIStoryboard *main = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        WBSettingVC *vc = [main instantiateViewControllerWithIdentifier:@"WBSettingVC"];
+//        UIStoryboard *main = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//        WBSettingVC *vc = [main instantiateViewControllerWithIdentifier:@"WBSettingVC"];
+        WBSettingVC  *vc = [[WBSettingVC alloc]init];
         WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:vc];
         vc.title = @"设置";
         [self presentViewController:nav animated:YES completion:nil];

@@ -6,8 +6,8 @@
 //  Copyright (c) 2015年 luoshuisheng. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "WBSettingBaseVC.h"
 
-@interface WBSettingVC : UITableViewController
+@interface WBSettingVC : WBSettingBaseVC
 
 @end

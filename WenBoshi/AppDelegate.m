@@ -2,8 +2,6 @@
 //  AppDelegate.m
 //  WenBoshi
 //
-//  Created by luoshuisheng on 14/12/7.
-//  Copyright (c) 2014年 luoshuisheng. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -41,14 +39,6 @@
 {
     [self.window.rootViewController showToastMessage:@"设备已断开"];
     [self.homeController.stopBtn setTitle:@"开始" forState:UIControlStateNormal];
-}
-
--(void)CBMangerDelegateWithManger:(CBManager *)manger andState:(CBState)states
-{
-//    WBHomeController *home = [[WBHomeController alloc] init];
-//    self.homeController = home;
-//    self.window.rootViewController = home;
-
 }
 
 

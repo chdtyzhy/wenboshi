@@ -7,7 +7,12 @@
 //
 
 #import "WBSettingVC.h"
+#import "WBSetBaseModel.h"
+#import "WBSetSwitchModel.h"
 #import "DelegateViewController.h"
+#import "WBSetQuestionVC.h"
+#import "WBSetFeckVC.h"
+#import "WBSetGroup.h"
 
 @interface WBSettingVC ()
 
@@ -18,18 +23,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
     [self showBackButtonWithTitle:@"返回"];
+    
+    WBSetBaseModel *firstModel = [WBSetBaseModel modelWithTitle:@"常见问题" andDesVC:[WBSetQuestionVC class]];
+    WBSetBaseModel *secondModel = [WBSetBaseModel modelWithTitle:@"意见反馈" andDesVC:[WBSetFeckVC class]];
+    WBSetBaseModel *threeModel = [WBSetBaseModel modelWithTitle:@"用户协议" andDesVC:[DelegateViewController class]];
+    WBSetGroup *group = [WBSetGroup  group];
+    group.items = @[firstModel,secondModel,threeModel];
+    self.groups = @[group];
+
 }
 
 -(void)backBarButtonPressed:(id)sender
 {
     [self backToPrePage];
 }
-- (IBAction)UserProtoal:(id)sender {
- 
-    DelegateViewController *avc=[[DelegateViewController alloc]initWithNibName:nil bundle:nil];
+- (void)UserProtoal:(id)sender {
+     DelegateViewController *avc=[[DelegateViewController alloc]initWithNibName:nil bundle:nil];
     avc.title = @"用户协议";
     [self.navigationController pushViewController:avc animated:YES];
-    
 }
 @end

@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 typedef enum :NSInteger{
-//    WBCehuaZhushou,
     WBCehuaCase,
     WBCehuaSetting
 }WBCehuaBtnTag;

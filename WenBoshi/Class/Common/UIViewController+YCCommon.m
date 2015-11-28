@@ -236,7 +236,9 @@
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [button.titleLabel setFont:[UIFont systemFontOfSize:15]];
-    CGSize size = [title sizeWithFont:button.titleLabel.font];
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont fontWithName:button.titleLabel.font.familyName size:15]};
+
+    CGSize size = [title sizeWithAttributes:attributes];
     button.frame = CGRectMake(0, 0, size.width + 20, 44);
     return button;
 }
@@ -252,7 +254,6 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
     alert.delegate =self;
     [alert show];
-    
 }
 
 

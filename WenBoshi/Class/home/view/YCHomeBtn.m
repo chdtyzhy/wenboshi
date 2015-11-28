@@ -16,6 +16,10 @@
     if (self) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.imageView.contentMode = UIViewContentModeCenter;
+        self.exclusiveTouch = YES;
+        self.titleLabel.font = [UIFont systemFontOfSize:11];
+        [self setTitleColor:RGB(118, 100, 86) forState:UIControlStateNormal];
+
     }
     return self;
 }

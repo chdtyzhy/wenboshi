@@ -33,11 +33,10 @@
 
 - (void)showDownButton;
 
--(void)addSegmentButtonInNav:(NSArray *)titleArray;
+- (void)addSegmentButtonInNav:(NSArray *)titleArray;
 
--(void)addRoundSegmentButton:(NSArray *)titleArray;
+- (void)addRoundSegmentButton:(NSArray *)titleArray;
 
--(void)segmentSelectIndex:(NSInteger)index;
 
 - (void)backBarButtonPressed:(id)sender;
 

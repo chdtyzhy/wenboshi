@@ -61,5 +61,6 @@
 #import "CBManager.h"
 #import "AppDelegate.h"
 #import "UIViewController+YCCommon.h"
+#import "MBProgressHUD+MJ.h"
 
 #endif
