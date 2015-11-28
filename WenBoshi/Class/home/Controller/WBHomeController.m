@@ -83,7 +83,7 @@
     //3
     WBWarningImageView *warningImageView = [[WBWarningImageView alloc] init];
     self.warningImageView = warningImageView;
-    warningImageView.image = [UIImage imageNamed:@"警报背景"];
+    warningImageView.image = [UIImage imageNamed:@"首页警报提示背景"];
     warningImageView.numberLabel.text = [@"30" stringByAppendingString:Wendu];
     warningImageView.frame = CGRectMake(self.view.frame.size.width - 13 - 135, 64, 135, 40);
     [self.view addSubview:warningImageView];
