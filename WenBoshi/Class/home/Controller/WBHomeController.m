@@ -204,7 +204,7 @@
 //开始采集温度
 -(void)startCaiji
 {
-    [MBProgressHUD showMessage:@"开始采集"];
+    [MBProgressHUD showMessage:@"获取温度中..."];
     __weak typeof(self)weakSelf = self;
     [self.manger startCaputerWithSucces:^(NSString *DeviceValue) {
         [MBProgressHUD hideHUD];
@@ -324,16 +324,17 @@
 {
     NSLog(@"---蓝牙状态变了---");
     if (states == kCBStateOpen) {
-        [self showToastMessage:@"开始数据采集"];
-        [self startCaiji];
+        if (self.manger.isConnected) {
+            [self showToastMessage:@"开始数据采集"];
+            [self startCaiji];
+        }else{
+            [self startScan];
+        }
     }else{
-        [self showToastMessage:@"停止数据采集"];
-        [self.manger stopCaputerWithSucces:^(NSString *value) {
-            
-        } andFail:^(NSString *errorStr, NSString *localValue) {
-            
-        }];
-    }
+        [self.manger disConnectDevice];
+        [self.stopBtn setTitle:@"开始" forState:UIControlStateNormal];
+        [self showToastMessage:@"蓝牙已关闭"];
+         }
 }
 -(void)CBMangerDelegateWithManger:(CBManager *)manger andDeviceName:(NSString*)name andRSSI:(NSNumber*)rssi andUUID:(NSString*)uid
 {

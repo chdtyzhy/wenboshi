@@ -160,13 +160,11 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
 -(void)disConnectDevice
 {
     NSLog(@"断开连接－－－");
+    _isConnected = NO;
+    if (_peripheral == nil) return;
    [self.manager cancelPeripheralConnection:_peripheral];
     [self.timer invalidate];
     self.timer = nil;
-    if ([_delegate  respondsToSelector:@selector(CBMangerDelegateWithManger:andState:)]) {
-        [_delegate  CBMangerDelegateWithManger:self andState:kCBStateClose];
-    }
-
 }
 /**停止采集*/
 -(void)stopCaputerWithSucces:(void (^)(NSString *))Succes andFail:(void (^)(NSString *, NSString *))failure
@@ -184,6 +182,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
 
 /**开始采集*/
 -(void)startCaputerWithSucces:(void (^)(NSString *))Succes andFail:(void (^)(NSString *, NSString *))failure{
+    _isConnected = YES;
     self.success = Succes;
     self.failure = failure;
     self.sendStr = SendON;
@@ -198,6 +197,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
 /**读取温度校准值*/
 -(void)readCalibrationValueWithSucces:(void (^)(NSString *))Succes andFail:(void (^)(NSString *, NSString *))failure
 {
+    _isConnected = YES;
     self.success  = Succes;
     self.failure = failure;
     if (self.isCaputering) {
