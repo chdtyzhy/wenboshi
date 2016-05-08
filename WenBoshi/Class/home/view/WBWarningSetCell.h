@@ -7,19 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WBaseTableViewCell.h"
 
-static NSString *const SAVEWARNDATA = @"SAVEWARNDATA";
+static NSString *const SaveHighTemperature = @"SaveHighTemperature";
+static NSString *const SaveLowTemperature = @"SaveLowTemperature";
 static NSString *const SAVESWITCHSTATUS = @"SAVESWITCHSTATUS";
 
 typedef enum : NSUInteger {
-    kCellTypeSwitch,
-    kCellTypeSlider,
+    kCellTypeSwitch = 0,
+    kCellTypeHight,
+    kCellTypeLow
 } cellType;
 
-@interface WBWarningSetCell : UITableViewCell
+@interface WBWarningSetCell : WBaseTableViewCell
 
 @property (nonatomic, assign) cellType  type;
-
-+(instancetype)cellWithTableView:(UITableView *)tableView;
 
 @end

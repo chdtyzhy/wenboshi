@@ -7,8 +7,8 @@
 //
 
 #import "WBWarningSetCell.h"
+#import "WBWarningDataCenter.h"
 
-static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
 
 @interface  WarnTempView: UIView
 
@@ -20,8 +20,9 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
 
 @property (nonatomic,  strong, nonnull) UILabel *numLable;
 
-
 @property (nonatomic, assign) CGFloat  tempValue;
+
+@property (nonatomic, assign) cellType  type;
 
 @end
 
@@ -46,7 +47,6 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
         _slider.minimumTrackTintColor = [UIColor redColor];
         _slider.maximumTrackTintColor = [UIColor clearColor];
         [_slider addTarget:self action:@selector(silderValueChanged:) forControlEvents:UIControlEventValueChanged];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(checkSlideEnable:) name:@"SWITCHSTATUSCHANGE" object:nil];
     }
     return _slider;
 }
@@ -76,15 +76,17 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
 }
 
 - (void)silderValueChanged:(UISlider *)sender {
-    self.numLable.text = [NSString stringWithFormat:@"%.1f°",sender.value];
     _tempValue = sender.value;
+    self.numLable.text = [NSString stringWithFormat:@"%.1f°",sender.value];
+    if (_type == kCellTypeHight) {
+        [[WBWarningDataCenter shareDataCenter] setHightTemp:[self.numLable.text floatValue]];
+    }
+    if (_type == kCellTypeLow) {
+        [[WBWarningDataCenter shareDataCenter] setLowTemp:[self.numLable.text floatValue]];
+    }
+    
 }
 
--(void)checkSlideEnable:(NSNotification *)noti
-{
-    BOOL isEnable = [noti.object boolValue];
-     self.slider.enabled = isEnable;
-}
 
 
 -(void)layoutSubviews
@@ -96,7 +98,6 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
     CGFloat sliderW = self.frame.size.width;
     CGFloat sliderH = 20;
     self.slider.frame = CGRectMake(sliderX, sliderY, sliderW, sliderH);
-    
     self.bgView.frame = CGRectMake(sliderX, sliderY+5, sliderW, 10);
     
     CGFloat iconX = 15;
@@ -139,17 +140,11 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
 {
     if (_swicthBtn == nil) {
         _swicthBtn = [[UISwitch alloc] init];
-        [_swicthBtn addTarget:self action:@selector(swicthBtnClick:) forControlEvents:UIControlEventValueChanged];
     }
     return _swicthBtn;
 }
 
-- (void)swicthBtnClick:(UISwitch *)sender
-{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:SWITCHSTATUSCHANGE object:@(sender.on)];
-    });
-}
+
 
 -(UILabel *)nameLale
 {
@@ -193,18 +188,9 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
    return self;
 }
 
-+(instancetype)cellWithTableView:(UITableView *)tableView
-{
-    static  NSString *ID = @"WBWarningSetCell";
-    WBWarningSetCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
-    if (cell == nil) {
-        cell = [[WBWarningSetCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
-    }
-    return cell;
-}
-
 -(void)setType:(cellType)type
 {
+    
          _type = type;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (_type == kCellTypeSwitch) {
@@ -215,32 +201,51 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
         if ([defaults boolForKey:kWarnSwitchState]) {
             self.swicthBtn.on = [defaults boolForKey:kWarnSwitchState];
         }
-        [self swicthBtnClick:self.swicthBtn];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveSwitchStatus) name:SAVESWITCHSTATUS object:nil];
+    }else if(_type == kCellTypeHight){
+        self.nameLale.text = @"高温设置";
+        self.swicthBtn.hidden = YES;
+        self.warnTempView.type = type;
+        self.warnTempView.hidden = NO;
+        self.warnTempView.tempValue = [defaults floatForKey:kWarnHightTemp];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveHightTempData) name:SaveHighTemperature object:nil];
     }else{
-        self.nameLale.text = @"警报温度";
+        self.nameLale.text = @"低温设置";
         self.swicthBtn.hidden = YES;
         self.warnTempView.hidden = NO;
-        self.warnTempView.tempValue = [defaults floatForKey:kWarnTemp];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTempData) name:SAVEWARNDATA object:nil];
+        self.warnTempView.type = type;
+        self.warnTempView.tempValue = [defaults floatForKey:kWarnLowTemp];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLowTempData) name:SaveLowTemperature object:nil];
     }
+    
 }
 
--(void)saveSwitchStatus
+#pragma mark ----- 设置高温 && 低温 && 开关状态
+- (void)saveSwitchStatus
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
      [defaults setBool:self.swicthBtn.on forKey:kWarnSwitchState];
     [defaults synchronize];
 }
 
--(void)saveTempData
+- (void)saveHightTempData
 {
-    if (!self.warnTempView.hidden && self.type == kCellTypeSlider) {
+    if (!self.warnTempView.hidden && self.type != kCellTypeSwitch) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setFloat:self.warnTempView.tempValue forKey:kWarnTemp];
+        [defaults setFloat:self.warnTempView.tempValue forKey:kWarnHightTemp];
         [defaults synchronize];
     }
 }
+
+- (void)saveLowTempData
+{
+  if (!self.warnTempView.hidden && self.type != kCellTypeSwitch) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setFloat:self.warnTempView.tempValue forKey:kWarnLowTemp];
+    [defaults synchronize];
+   }
+}
+
 -(void)layoutSubviews
 {
     [super layoutSubviews];
@@ -267,8 +272,12 @@ static NSString *const SWITCHSTATUSCHANGE= @"SWITCHSTATUSCHANGE";
     }else{
         self.warnTempView.frame = CGRectZero;
     }
-   
-    self.diver.frame = CGRectMake(10, self.contentView.frame.size.height - 5, self.contentView.frame.size.width-20, 5);
+    
+    if ([self isLastRow]) {
+        self.diver.frame = CGRectZero;
+    }else{
+       self.diver.frame = CGRectMake(10, self.contentView.frame.size.height - 5, self.contentView.frame.size.width-20, 5);
+    }
 }
 
 -(void)dealloc

@@ -62,12 +62,14 @@
 		C20276BD1C09933800371487 /* WBSetQuestionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C20276BC1C09933800371487 /* WBSetQuestionVC.m */; };
 		C20276C81C09948800371487 /* WBSetFeckVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C20276C71C09948800371487 /* WBSetFeckVC.m */; };
 		C20D08761B67D92D00F0D5B6 /* WBSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C20D08741B67D92D00F0D5B6 /* WBSettingVC.m */; };
+		C22AA7F91CC36BB90031E4F5 /* alarm.wav in Resources */ = {isa = PBXBuildFile; fileRef = C22AA7F81CC36BB90031E4F5 /* alarm.wav */; };
+		C22AA7FC1CC37A440031E4F5 /* WBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C22AA7FB1CC37A440031E4F5 /* WBaseTableViewCell.m */; };
 		C26A4BD01A3447A900872910 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C26A4BCF1A3447A900872910 /* main.m */; };
 		C27173351A7CFCED00756892 /* MJAudioTool.m in Sources */ = {isa = PBXBuildFile; fileRef = C27173341A7CFCED00756892 /* MJAudioTool.m */; };
-		C27173371A7CFCFF00756892 /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C27173361A7CFCFE00756892 /* alarm.mp3 */; };
 		C28A6B1B1BEDFE4C0085F9CF /* WBAdjustController.m in Sources */ = {isa = PBXBuildFile; fileRef = C28A6B151BEDFE4C0085F9CF /* WBAdjustController.m */; };
 		C28A6B1D1BEDFE4C0085F9CF /* WBWarningController.m in Sources */ = {isa = PBXBuildFile; fileRef = C28A6B191BEDFE4C0085F9CF /* WBWarningController.m */; };
 		C2937E441C009BEC009D51D6 /* WBWarningSetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C2937E431C009BEC009D51D6 /* WBWarningSetCell.m */; };
+		C2BD4D371CC3405C0000E71A /* WBWarningDataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BD4D361CC3405C0000E71A /* WBWarningDataCenter.m */; };
 		C2ED57131C0A06830071FC09 /* question.html in Resources */ = {isa = PBXBuildFile; fileRef = C2ED57121C0A06830071FC09 /* question.html */; };
 		C2F98B9E1B176DCE00919B0A /* CBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F98B9D1B176DCE00919B0A /* CBManager.m */; };
 /* End PBXBuildFile section */
@@ -181,19 +183,23 @@
 		C20276C71C09948800371487 /* WBSetFeckVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSetFeckVC.m; sourceTree = "<group>"; };
 		C20D08731B67D92D00F0D5B6 /* WBSettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSettingVC.h; sourceTree = "<group>"; };
 		C20D08741B67D92D00F0D5B6 /* WBSettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSettingVC.m; sourceTree = "<group>"; };
+		C22AA7F81CC36BB90031E4F5 /* alarm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = alarm.wav; sourceTree = "<group>"; };
+		C22AA7FA1CC37A440031E4F5 /* WBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBaseTableViewCell.h; sourceTree = "<group>"; };
+		C22AA7FB1CC37A440031E4F5 /* WBaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBaseTableViewCell.m; sourceTree = "<group>"; };
 		C26A4BCA1A3447A900872910 /* WenBoshi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WenBoshi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C26A4BCE1A3447A900872910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C26A4BCF1A3447A900872910 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C27172F51A7CC06400756892 /* WBDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDefine.h; sourceTree = "<group>"; };
 		C27173331A7CFCED00756892 /* MJAudioTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJAudioTool.h; sourceTree = "<group>"; };
 		C27173341A7CFCED00756892 /* MJAudioTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJAudioTool.m; sourceTree = "<group>"; };
-		C27173361A7CFCFE00756892 /* alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm.mp3; sourceTree = "<group>"; };
 		C28A6B141BEDFE4C0085F9CF /* WBAdjustController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAdjustController.h; sourceTree = "<group>"; };
 		C28A6B151BEDFE4C0085F9CF /* WBAdjustController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAdjustController.m; sourceTree = "<group>"; };
 		C28A6B181BEDFE4C0085F9CF /* WBWarningController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWarningController.h; sourceTree = "<group>"; };
 		C28A6B191BEDFE4C0085F9CF /* WBWarningController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWarningController.m; sourceTree = "<group>"; };
 		C2937E421C009BEC009D51D6 /* WBWarningSetCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWarningSetCell.h; sourceTree = "<group>"; };
 		C2937E431C009BEC009D51D6 /* WBWarningSetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWarningSetCell.m; sourceTree = "<group>"; };
+		C2BD4D351CC3405C0000E71A /* WBWarningDataCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WBWarningDataCenter.h; path = WenBoshi/Class/home/Controller/setting/Questions/WBWarningDataCenter.h; sourceTree = SOURCE_ROOT; };
+		C2BD4D361CC3405C0000E71A /* WBWarningDataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WBWarningDataCenter.m; path = WenBoshi/Class/home/Controller/setting/Questions/WBWarningDataCenter.m; sourceTree = SOURCE_ROOT; };
 		C2ED57121C0A06830071FC09 /* question.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = question.html; sourceTree = "<group>"; };
 		C2F98B9C1B176DCE00919B0A /* CBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBManager.h; sourceTree = "<group>"; };
 		C2F98B9D1B176DCE00919B0A /* CBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBManager.m; sourceTree = "<group>"; };
@@ -274,6 +280,8 @@
 				BA8661F71AC8E9E1000C0E39 /* WBTemperature.m */,
 				BAE05FBC1ACB9CBE0026CE91 /* WBGroupTemp.h */,
 				BAE05FBD1ACB9CBE0026CE91 /* WBGroupTemp.m */,
+				C2BD4D351CC3405C0000E71A /* WBWarningDataCenter.h */,
+				C2BD4D361CC3405C0000E71A /* WBWarningDataCenter.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -327,6 +335,8 @@
 				BAE05FC21ACBE0A20026CE91 /* WBCacheCell.xib */,
 				C2937E421C009BEC009D51D6 /* WBWarningSetCell.h */,
 				C2937E431C009BEC009D51D6 /* WBWarningSetCell.m */,
+				C22AA7FA1CC37A440031E4F5 /* WBaseTableViewCell.h */,
+				C22AA7FB1CC37A440031E4F5 /* WBaseTableViewCell.m */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -545,7 +555,7 @@
 		C27172F71A7CCEF900756892 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				C27173361A7CFCFE00756892 /* alarm.mp3 */,
+				C22AA7F81CC36BB90031E4F5 /* alarm.wav */,
 				C27173331A7CFCED00756892 /* MJAudioTool.h */,
 				C27173341A7CFCED00756892 /* MJAudioTool.m */,
 				BA8661F31AC8E54E000C0E39 /* WBCacheTool.h */,
@@ -607,7 +617,7 @@
 		C26A4BC21A3447A900872910 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = luoshuisheng;
 				TargetAttributes = {
 					C26A4BC91A3447A900872910 = {
@@ -642,9 +652,9 @@
 				C20276B51C09928700371487 /* delegate.html in Resources */,
 				183D5C851A7A7B220032A2A1 /* Images.xcassets in Resources */,
 				BAE05FC31ACBE0A20026CE91 /* WBCacheCell.xib in Resources */,
-				C27173371A7CFCFF00756892 /* alarm.mp3 in Resources */,
 				C2ED57131C0A06830071FC09 /* question.html in Resources */,
 				1821FF521A7CC09500B4EED9 /* MBProgressHUD.bundle in Resources */,
+				C22AA7F91CC36BB90031E4F5 /* alarm.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,6 +687,7 @@
 				C20276BD1C09933800371487 /* WBSetQuestionVC.m in Sources */,
 				183D5C8E1A7A7BDA0032A2A1 /* WBCehuaView.m in Sources */,
 				BA8661ED1AC8E4BF000C0E39 /* FMDatabaseAdditions.m in Sources */,
+				C22AA7FC1CC37A440031E4F5 /* WBaseTableViewCell.m in Sources */,
 				BA2C56811B0619FB003DAEEA /* UIViewExt.m in Sources */,
 				1821FF511A7CC09500B4EED9 /* MBProgressHUD+MJ.m in Sources */,
 				BA7398471ACE816D00BA3228 /* MJType.m in Sources */,
@@ -695,6 +706,7 @@
 				BA9083E11AC3B46300987CB5 /* UIViewController+WB.m in Sources */,
 				BA8661F81AC8E9E1000C0E39 /* WBTemperature.m in Sources */,
 				BA73984B1ACE816D00BA3228 /* NSObject+MJMember.m in Sources */,
+				C2BD4D371CC3405C0000E71A /* WBWarningDataCenter.m in Sources */,
 				BA8661EF1AC8E4BF000C0E39 /* FMDatabaseQueue.m in Sources */,
 				183D5C801A7A7ABA0032A2A1 /* WBHeaderView.m in Sources */,
 				BA0836761AD7F4BA008FBDD7 /* JBChartView.m in Sources */,
@@ -737,6 +749,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -808,7 +821,7 @@
 				INFOPLIST_FILE = WenBoshi/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.wenboshi.wendu;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wenboshi.wenduXX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -826,7 +839,7 @@
 				INFOPLIST_FILE = WenBoshi/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.wenboshi.wendu;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wenboshi.wenduXX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

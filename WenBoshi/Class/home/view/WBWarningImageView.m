@@ -33,7 +33,7 @@
         titleLabel.font = [UIFont systemFontOfSize:12];
         titleLabel.textColor = [UIColor whiteColor];
         self.titleLabel = titleLabel;
-        titleLabel.text = @"警报温度.";
+        titleLabel.text = @"警报温度";
         
         UILabel *numberLable = [[UILabel alloc] init];
         self.numberLabel = numberLable;
@@ -60,7 +60,7 @@
     
     CGFloat numberX = titleX + titleSize.width + 5;
     CGFloat numberY = titleY;
-    CGFloat numberW = 40;
+    CGFloat numberW = 50;
     self.numberLabel.frame = CGRectMake(numberX, numberY, numberW, titleSize.height);
 }
 

@@ -99,8 +99,8 @@ static void SoundFinished(SystemSoundID soundID,void* sample){
         SystemSoundID soundID = [_soundIDDict[filename] unsignedIntValue];
         if (!soundID) { // 创建
             // 加载音效文件
-            NSURL *url = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
-            
+            NSString *path = [[NSBundle mainBundle] pathForResource :filename ofType:nil];
+            NSURL *url = [NSURL fileURLWithPath:path];
             if (!url) return;
             
             // 创建音效ID

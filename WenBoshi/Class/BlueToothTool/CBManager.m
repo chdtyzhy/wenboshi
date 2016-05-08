@@ -38,10 +38,22 @@ static NSString  * const  SetAdjust = @"Set_Adjust:";
 
 static NSString  * const  Set_Addr = @"Set_Addr:";
 
+static NSString  * const  Set_AlarmHi = @"Set_AlarmHi:";  //高温设置
+
+static NSString  * const  Set_AlarmLo = @"Set_AlarmLo:";  //低温设置
+
+static NSString  * const  Read_Alarm  = @"Read_Alarm";    //读取警报值
+
+static NSString  * const  AlarmLo     = @"AlarmLo:";
+
+static NSString  * const  AlarmHi     = @"AlarmHi:";
+
 static NSString  * const  TEMP = @"-Temp";
 //:xxxx-Temp
 
 static NSString  * const  errorStr = @"请先停止温度采集";
+
+static NSString  * const  errorValueInvaild = @"设置值无效";
 
 static NSString  * const  timeOut =  @"响应超时,请稍后重新连接";
 /**********************/
@@ -172,9 +184,6 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
     _success = Succes;
     _failure = failure;
     self.sendStr = SendOFF;
-    if (_FAF1Characteristic) {
-     [_peripheral setNotifyValue:YES forCharacteristic:_FAF1Characteristic];
-    }
     self.TotalNum = 0;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(setOpertionWithTimer) userInfo:nil repeats:YES];
     [[NSRunLoop alloc] addTimer:self.timer forMode:NSDefaultRunLoopMode];
@@ -186,6 +195,10 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
     self.success = Succes;
     self.failure = failure;
     self.sendStr = SendON;
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
     if (_FAF1Characteristic) {
        [_peripheral setNotifyValue:YES forCharacteristic:_FAF1Characteristic];
     }
@@ -273,6 +286,101 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
     }
 }
 
+#pragma mark 设置高温 
+- (void)setHighTemperatureValue:(CGFloat)hightValue andSucces:(successTask)success andFailed:(failTask)fail;
+{
+    self.success = success;
+    self.failure = fail;
+    NSString *hightTempValue = [self formatTempData:hightValue];
+
+    if (self.isCaputering ||! _isConnected) {//没有关闭采集
+        if (self.failure) {
+            self.failure(errorStr,nil);
+        }
+    }
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+    [self setAlartHiTask:hightTempValue];
+}
+
+
+- (void)setAlartHiTask:(NSString *)hightValue
+{
+    if (hightValue && [hightValue isKindOfClass:NSString.class] && hightValue.length) {
+        NSString *s =[Set_AlarmHi stringByAppendingString:hightValue];
+        self.sendStr = [s stringByAppendingString:strOC];
+        self.TotalNum = 0;
+        [self setOpertion:self.sendStr];
+    }
+}
+
+#pragma mark --- 低温设置
+- (void)setLowTemperautreValue:(CGFloat)lowValue andSucces:(successTask)success andFailed:(failTask)fail{
+
+    self.success = success;
+    self.failure = fail;
+    NSString *hightTempValue = [self formatTempData:lowValue];
+    NSLog(@"LowTemperautreValue = %@,",hightTempValue);
+    if (self.isCaputering ||! _isConnected) {//没有关闭采集
+        if (self.failure) {
+            self.failure(errorStr,nil);
+        }
+    }
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+    [self setAlarmLoTask:hightTempValue];
+}
+
+
+- (void)setAlarmLoTask:(NSString *)lowValue
+{
+    if (lowValue && [lowValue isKindOfClass:NSString.class] && lowValue.length) {
+        NSString *s =[Set_AlarmLo stringByAppendingString:lowValue];
+        self.sendStr = [s stringByAppendingString:strOC];
+        self.TotalNum = 0;
+        [self setOpertion:self.sendStr];
+    }
+}
+
+- (NSString *)formatTempData:(CGFloat)value
+{
+    NSString *valueStr = nil;
+    if (value >=100) {
+        valueStr = [NSString stringWithFormat:@"%.1f",value];
+    }else if (value > 0 && value <100) {//大于 0
+        valueStr = [NSString stringWithFormat:@" %.1f",value];
+    }else if(value < 0){ //小于0
+        valueStr = [NSString stringWithFormat:@"%.1f",value];
+    }else{//等于 0
+        valueStr = [NSString stringWithFormat:@"  %.1f",value];
+    }
+    return valueStr;
+}
+
+#pragma mark --读取警报值
+- (void)Read_AlarmAndSuccess:(successTask)success andFialed:(failTask)fail;
+{
+    self.success = success;
+    self.failure = fail;
+    if (self.isCaputering) {//没有关闭采集
+        if (self.failure) {
+            self.failure(errorStr,nil);
+        }
+    }
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+    self.sendStr = Read_Alarm;
+    self.TotalNum = 0;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(setOpertionWithTimer) userInfo:nil repeats:YES];
+    [[NSRunLoop alloc] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+}
+
 #pragma mark  定时设置校准值
 -(void)setOpertionWithTimer
 {
@@ -298,6 +406,8 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
        [self setOpertion:self.sendStr];
     }
 }
+
+
 //#pragma mark  拼接字符串
 //-(char*)initCharIndex:(char*)index andEnd:(char*)end
 //{
@@ -316,13 +426,18 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
     if (![str hasPrefix:self.sendStr]) {
         return;
     }
+    if (_FAF1Characteristic == nil) return;
+    
+    [_peripheral setNotifyValue:YES forCharacteristic:_FAF1Characteristic];
     if (str.length) {
     const char *s = [str UTF8String];
     NSData *data = [NSData dataWithBytes:s length:strlen(s)];
-    if (_FAF1Characteristic) {
+    if (_FAF1Characteristic && _FAF1Characteristic.properties == CBCharacteristicWriteWithResponse) {
             [_peripheral writeValue:data forCharacteristic:_FAF1Characteristic type:CBCharacteristicWriteWithResponse];
-   
-        }
+    }else{
+        [_peripheral writeValue:data forCharacteristic:_FAF1Characteristic type:CBCharacteristicWriteWithoutResponse];
+      }
+
     }
 }
 #pragma mark 设置地址值
@@ -338,9 +453,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
         NSString *addrStr = [NSString stringWithFormat:@"%d",addr];
         NSString *s =[Set_Addr stringByAppendingString:addrStr];
         self.sendStr = [s stringByAppendingString:TEMP];
-        if (_FAF1Characteristic) {
-            [_peripheral setNotifyValue:YES forCharacteristic:_FAF1Characteristic];
-        }
+       
         if (self.timer) {
             [self.timer invalidate];
             self.timer = nil;
@@ -392,7 +505,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
 ////    CBUUID
-//   NSLog(@"====%@",[NSString stringWithFormat:@"已发现 peripheral: %@ rssi: %@, UUID: %@ advertisementData: %@ ", peripheral, RSSI, peripheral.UUID, advertisementData]);
+  NSLog(@"====%@",[NSString stringWithFormat:@"已发现 peripheral: %@ rssi: %@, name: %@ advertisementData: %@ ", peripheral, RSSI, peripheral.name, advertisementData]);
 //  
     CBUUID *sysUID = [CBUUID UUIDWithString:@"FAF0"];
     if ([advertisementData[@"kCBAdvDataServiceUUIDs"][0] isEqual:sysUID]) {//同类型的设备
@@ -404,7 +517,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
             [_delegate CBMangerDelegateWithManger:self andDeviceName:peripheral.name andRSSI:RSSI andUUID:peripheral.identifier.UUIDString];
         }
         [self.manager stopScan];
-    }
+   }
 }
 
 //连接外设成功，开始发现服务
@@ -467,7 +580,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
 -(void) peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error{
     
       NSLog(@"发现服务.");
-    int i=0;
+     int i=0;
 //    for (CBService *s in peripheral.services) {
 //     [self.nServices addObject:s];
 //    }
@@ -483,11 +596,12 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
     NSLog(@"---%@",[NSString stringWithFormat:@"发现特征的服务:%@ (%@)",service.UUID.data ,service.UUID]);
     //遍历特征
     for (CBCharacteristic *c in service.characteristics) {
-          NSLog(@"---%@",[NSString stringWithFormat:@"特征 UUID: %@ (%@)",c.UUID.data,c.UUID]);
+          NSLog(@"---%@",[NSString stringWithFormat:@"特征 UUID: %@ (%@), %ld",c.UUID.data,c.UUID,(unsigned long)c.properties]);
         
         if ([c.UUID isEqual:[CBUUID UUIDWithString:@"FAF1"]]) {
             NSLog(@"可以接收到FAF1这个服务");
             _FAF1Characteristic = c;
+            [_peripheral setNotifyValue:YES forCharacteristic:_FAF1Characteristic];
             break;
         }
     }
@@ -504,7 +618,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"FAF1"]])
         {
             NSString *str1 = [[NSString alloc]initWithData:characteristic.value encoding:NSUTF8StringEncoding];
-            NSLog(@"接收到的数据==%@,self.sendStr==%@",str1,self.sendStr);
+//            NSLog(@"接收到的数据==%@ ****** self.sendStr==%@",str1,self.sendStr);
             if ([str1 hasPrefix:SetAdjust]&&[self.sendStr hasPrefix:ReadAdjust]) {//读校验值
                 [self.timer invalidate];
                  self.timer = nil;
@@ -529,8 +643,58 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
                     self.timer = nil;
                 }
                 return;
-            }
-            else if([self.sendStr hasPrefix:SendON]){//采集温度
+            }else if ([str1 containsString:OK] && [self.sendStr hasPrefix:Set_AlarmHi]){//设置高温
+                if (self.success) {
+                    NSRange range = [self.sendStr rangeOfString:Set_AlarmHi];
+                    NSString *value = [self.sendStr substringWithRange:NSMakeRange(range.location+range.length, num)];
+                    self.success(value);
+                    [self.timer invalidate];
+                    self.timer = nil;
+                }
+                return;
+            }else if ([str1 containsString:OK] && [self.sendStr hasPrefix:Set_AlarmLo]){//设置低温
+                if (self.success) {
+                    NSRange range = [self.sendStr rangeOfString:Set_AlarmLo];
+                    NSString *value = [self.sendStr substringWithRange:NSMakeRange(range.location+range.length, num)];
+                    self.success(value);
+                    [self.timer invalidate];
+                    self.timer = nil;
+                    self.success(value);
+                }
+                return;
+            }else if ([self.sendStr hasPrefix:Read_Alarm]){
+                str1 = [str1 stringByReplacingOccurrencesOfString:@" " withString:@""];//去除空格
+                if ([str1 containsString:strOC]) {
+                    [self.tempStr appendString:str1];
+                }
+                if ([self.tempStr rangeOfString:AlarmHi].location != NSNotFound && [self.tempStr rangeOfString:AlarmLo].location != NSNotFound) {
+                    NSString *value = nil;
+                    NSRange rangeHi = [self.tempStr rangeOfString:AlarmHi];
+                    NSString *hiValue  = nil;
+                    if (self.tempStr.length >rangeHi.location + rangeHi.length + num) {
+                        hiValue = [self.tempStr substringWithRange:NSMakeRange(rangeHi.location+rangeHi.length, num)];
+                    }
+                    
+                    NSString   *lowValue  = nil;
+                    NSRange    rangeLo = [self.tempStr rangeOfString:AlarmLo];
+                    if (self.tempStr.length >rangeLo.location + rangeLo.length + num) {
+                        lowValue = [self.tempStr substringWithRange:NSMakeRange(rangeLo.location+rangeLo.length, num)];
+                    }
+                    if (hiValue && lowValue) {
+                        value = [NSString stringWithFormat:@"%@,%@",hiValue,lowValue];
+                    }
+                    if (self.success) {
+                        self.success(value);
+                    }
+                    if(self.timer){
+                        [self.timer invalidate];
+                        self.timer = nil;
+                    }
+                    return;
+                }
+                return;
+                
+            }else if([self.sendStr hasPrefix:SendON]){//采集温度
             str1 = [str1 stringByRemovingPercentEncoding];
             str1 = [str1 stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
             str1 = [str1 stringByReplacingOccurrencesOfString:@"\r" withString:@""];
@@ -568,7 +732,9 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
             }
             else
             {
-                [self.tempStr appendString:str1];
+                if (str1) {
+                    [self.tempStr appendString:str1];
+                }
                 return;
             }
             
@@ -621,7 +787,7 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
 -(void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
     if (error) {
-        NSLog(@"=======%@",error.userInfo);
+        NSLog(@"error.userInfo=%@",error.userInfo);
         if (self.failure) {
             NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:plistPath];;
             NSString *value = nil;
@@ -634,6 +800,14 @@ typedef void(^failure)(NSString*errorStr,NSString *localValue);
         }
     }else{
         NSLog(@"发送数据成功");
+    }
+}
+
+- (void)clear
+{
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
     }
 }
 

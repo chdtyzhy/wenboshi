@@ -10,7 +10,9 @@
 #import "WBSetBaseModel.h"
 
 
+
 @interface WBSetBaseCell : UITableViewCell
+
 
 @property (nonatomic, strong) WBSetBaseModel *model;
 

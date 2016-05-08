@@ -46,7 +46,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([defaults boolForKey:kWarnSwitchState]) {
         self.warningImageView.hidden = NO;
-        NSString *warnTemp = [NSString stringWithFormat:@"%.1f℃", [defaults floatForKey:kWarnTemp]];
+        NSString *warnTemp = [NSString stringWithFormat:@"%.1f℃", [defaults floatForKey:kWarnHightTemp]];
         self.warningImageView.numberLabel.text = warnTemp;
     }else
     {
@@ -255,10 +255,33 @@
 //警报设置 点击
 - (void)warnSetBtnClick:(YCHomeBtn *)btn
 {
-    WBWarningController *controller = [[WBWarningController alloc] init];
-    WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
-    [self presentViewController:nav animated:YES completion:nil];
+    if(self.manger.isConnected ){
+        if (self.manger.isCaputering) {
+            [MBProgressHUD showMessage:@"停止采集"];
+            __weak typeof(self)weakSelf = self;
+            [self.manger stopCaputerWithSucces:^(NSString *DeviceValue) {
+                [MBProgressHUD hideHUD];
+                WBWarningController *controller = [[WBWarningController alloc] init];
+                WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
+                [self presentViewController:nav animated:YES completion:nil];
+                
+            } andFail:^(NSString *errorStr, NSString *localValue) {
+                [MBProgressHUD hideHUD];
+                [weakSelf showToastMessage:errorStr];
+            }];
+        }else{
+            WBWarningController *controller = [[WBWarningController alloc] init];
+            WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        }else{
+           WBWarningController *controller = [[WBWarningController alloc] init];
+           WBNavigationController *nav = [[WBNavigationController alloc] initWithRootViewController:controller];
+            [self presentViewController:nav animated:YES completion:nil];
+    }
+    
 }
+
 
 //偏差调整 点击
 -(void)adjustSetBtnClick:(YCHomeBtn *)btn
@@ -343,16 +366,21 @@
 //获取温度
 -(void)CBManagerDelegateWithManger:(CBManager *)manger andTemperature:(NSString *)temp andBat:(NSString *)V
 {
+    static BOOL  isPlay = NO;
     self.wenduLabel.text = [temp stringByAppendingString:Wendu2];
     self.temp = [temp floatValue];
     if (!self.warningImageView.hidden) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults boolForKey:kWarnSwitchState]) {
-            if ([temp floatValue]>[defaults floatForKey:kWarnTemp] ) {
-                [MJAudioTool playSound:@"alarm.mp3" andRepeat:YES];
+            if ([temp floatValue]>[defaults floatForKey:kWarnHightTemp] ) {
+                if (!isPlay) {
+                    isPlay = YES;
+                    [MJAudioTool playSound:@"alarm.wav" andRepeat:YES];
+                }
             }else{
                 NSLog(@"停止警告");
-                [MJAudioTool disposeSound:@"alarm.mp3"];
+                isPlay = NO;
+                [MJAudioTool disposeSound:@"alarm.wav"];
             }
         }
     }        

@@ -31,7 +31,9 @@ typedef enum : NSUInteger {
 
 @end
 
+typedef void(^successTask)(NSString *value);
 
+typedef void(^failTask)(NSString  *error,NSString *localValue);
 
 @interface CBManager : NSObject
 
@@ -66,9 +68,18 @@ typedef enum : NSUInteger {
 //读取版本号
 -(void)readVerWithSuccess:(void(^)(NSString *DeviceValue))success andFail:(void(^)(NSString*errorStr,NSString *localValue))failure;
 //发送温度校准值
--(void)setCalibbrationValue:(NSString*)value andSucces:(void(^)(NSString*DeviceValue))success andFail:(void(^)(NSString*errorStr,NSString *localValue))failure;
+- (void)setCalibbrationValue:(NSString*)value andSucces:(void(^)(NSString*DeviceValue))success andFail:(void(^)(NSString*errorStr,NSString *localValue))failure;
+
+//设置高温 && 低温
+- (void)setHighTemperatureValue:(CGFloat)hightValue andSucces:(successTask)success andFailed:(failTask)fail;
+
+- (void)setLowTemperautreValue:(CGFloat)lowValue andSucces:(successTask)success andFailed:(failTask)fail;
+
+- (void)Read_AlarmAndSuccess:(successTask)success andFialed:(failTask)fail;
 // 发送“Set_Addr:xxxx-Temp”,进行设置地址(蓝牙地址),返回“OK”,重新开机生效。
 //查询蓝牙时为该设置地址,设置范围:0000-9999,默认”0000-Temp”
 -(void)setAddr:(unsigned int)addr andSucces:(void(^)(NSString *DeviceValue))success andFail:(void(^)(NSString*errorStr,NSString *localValue))failure;
+
+- (void)clear;
 
 @end

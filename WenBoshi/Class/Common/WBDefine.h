@@ -10,8 +10,9 @@
 #define WenBoshi_WBDefine_h
 
 // userdefaults 的key
-#define kWarnSwitchState @"kWarnSwitchState"
-#define kWarnTemp        @"kWarnTemp"
+#define kWarnSwitchState      @"kWarnSwitchState"
+#define kWarnHightTemp        @"kWarnHightTemp"
+#define kWarnLowTemp          @"kWarnLowTemp"
 #import "UIViewController+WB.h"
 
 #define MainScreenWith   [UIScreen mainScreen].bounds.size.width
