@@ -13,7 +13,6 @@
 
 #define plistPath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"CBMangerData.plist"] 
 
-
 /**
  *   命令
  *
